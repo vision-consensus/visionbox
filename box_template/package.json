@@ -1,0 +1,30 @@
+{
+  "name": "bare-visionbox",
+  "version": "1.0.1",
+  "description": "VisionBox - Simple development framework for Vision",
+  "keywords": [
+    "VisionBox",
+    "Vision",
+    "Solidity",
+    "Truffle",
+    "Contract"
+  ],
+  "scripts": {
+    "build": "echo \" build  complete \" "
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vision-consensus/bare-visionbox"
+  },
+  "homepage": "https://github.com/vision-consensus/bare-visionbox",
+  "bugs": {
+    "url": "https://github.com/vision-consensus/bare-visionbox/issues"
+  },
+  "originalAuthor": "consensys.net",
+  "authors": [],
+  "publishConfig": {
+    "access": "public"
+  }
+}
