@@ -18,7 +18,7 @@ function getWrapper(options = {}) {
     supportedVersions.map( a => a.split('.').map( n => +n+100000 ).join('.')).sort()
       .map( a => a.split('.').map( n => +n-100000 ).join('.'));
 
-  let compilerVersion = '0.8.0'
+  let compilerVersion = '0.5.1'
   const solcDir = "../../solcjs"
 
   const soljsonPath = path.join(solcDir, `v${compilerVersion}.js`)
