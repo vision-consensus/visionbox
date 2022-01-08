@@ -1,6 +1,6 @@
 {
   "name": "visionbox",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "VisionBox - Simple development framework for Vision",
   "keywords": [
     "VisionBox",
@@ -10,7 +10,7 @@
     "Contract"
   ],
   "scripts": {
-    "build": "scripts/build.sh",
+    "build": "sh scripts/build.sh",
     "test": "echo \"Error: tests will be fixed soon in a new release\" && exit 1",
     "lint": "find src -name '*.js' | xargs node_modules/.bin/eslint"
   },
@@ -90,27 +90,9 @@
   "bugs": {
     "url": "https://github.com/vision-consensus/visionbox/issues"
   },
-  "originalAuthor": "consensys.net",
+  "originalAuthor": "vision",
   "authors": [
-    {
-      "name": "Tim Coulter",
-      "email": "tim@timothyjcoulter.com",
-      "url": "https://github.com/tcoulter"
-    },
-    {
-      "name": "alinger",
-      "email": "alinger@forke.cn"
-    },
-    {
-      "name": "Francesco Sullo",
-      "email": "francesco@sullo.co",
-      "url": "https://github.com/sullof"
-    },
-    {
-      "name": "Kang JianCheng",
-      "email": "1063303665@qq.com",
-      "url": "https://github.com/kjc233"
-    }
+
   ],
   "publishConfig": {
     "access": "public"
