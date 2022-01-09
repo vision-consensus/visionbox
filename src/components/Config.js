@@ -35,10 +35,7 @@ function Config(truffle_directory, working_directory, network) {
     resolver: null,
     artifactor: null,
     ethpm: {
-      ipfs_host: 'ipfs.infura.io',
-      ipfs_protocol: 'https',
-      registry: '0x8011df4830b4f696cd81393997e5371b93338878',
-      install_provider_uri: 'https://ropsten.infura.io/truffle'
+      
     },
     solc: {
       optimizer: {

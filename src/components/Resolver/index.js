@@ -5,6 +5,7 @@ const whilst = require('async/whilst')
 const contract = require('../Contract')
 const expect = require('@truffle/expect')
 const provision = require('../Provisioner')
+const chalk = require('chalk')
 
 function Resolver(options) {
   expect.options(options, [
@@ -24,17 +25,17 @@ function Resolver(options) {
 // This function might be doing too much. If so, too bad (for now).
 Resolver.prototype.require = function (import_path, search_path) {
   const self = this
-
+  let abstraction;
   for (let i = 0; i < this.sources.length; i++) {
     const source = this.sources[i]
     const result = source.require(import_path, search_path)
     if (result) {
-
-      const abstraction = contract(result)
+      abstraction = contract(result)
       provision(abstraction, self.options)
-      return abstraction
     }
   }
+  if (abstraction) return abstraction
+  console.error(chalk.red(chalk.bold('ERROR:') + 'Could not find artifacts for ' + import_path + ' from any sources'))
   throw new Error('Could not find artifacts for ' + import_path + ' from any sources')
 }
 

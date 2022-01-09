@@ -255,7 +255,12 @@ const Migrate = {
     if (Migrations.isDeployed() === false) {
       return callback(null, 0)
     }
-
+    // try {
+    //   Migrations = options.resolver.require("Migrations");
+    // } catch (error) {
+    //   // don't throw, Migrations contract optional
+    //   return 0;
+    // }
     Migrations.deployed().then(function (migrations) {
       // Two possible Migrations.sol's (lintable/unlintable)
 

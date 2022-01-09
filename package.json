@@ -50,13 +50,13 @@
     "safe-eval": "^0.4.1",
     "semver": "^6.1.1",
     "serve-static": "^1.10.0",
-    "solc": "0.5.9",
+    "solc": "^0.8.10",
     "source-map-support": "^0.5.3",
     "spawn-args": "^0.1.0",
     "superagent": "^5.1.0",
     "temp": "^0.8.3",
-    "visionweb": "^1.0.0",
     "vcsurl": "^0.1.1",
+    "visionweb": "^1.0.0",
     "web3-mock": "1.0.1",
     "yargs": "^8.0.2"
   },
@@ -91,9 +91,7 @@
     "url": "https://github.com/vision-consensus/visionbox/issues"
   },
   "originalAuthor": "vision",
-  "authors": [
-
-  ],
+  "authors": [],
   "publishConfig": {
     "access": "public"
   }

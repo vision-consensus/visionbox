@@ -136,7 +136,6 @@ const compile = function (sources, options, callback) {
   }
 
   const contracts = standardOutput.contracts
-
   const files = []
   Object.keys(standardOutput.sources).forEach(function (filename) {
     const source = standardOutput.sources[filename]
@@ -148,7 +147,6 @@ const compile = function (sources, options, callback) {
   // This block has comments in it as it's being prepared for solc > 0.4.10
   Object.keys(contracts).forEach(function (source_path) {
     const files_contracts = contracts[source_path]
-
     Object.keys(files_contracts).forEach(function (contract_name) {
       const contract = files_contracts[contract_name]
 
@@ -177,27 +175,32 @@ const compile = function (sources, options, callback) {
       // Go through the link references and replace them with older-style
       // identifiers. We'll do this until we're ready to making a breaking
       // change to this code.
-      Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
-        const fileLinks = contract.evm.bytecode.linkReferences[file_name]
-
-        Object.keys(fileLinks).forEach(function (library_name) {
-          const linkReferences = fileLinks[library_name] || []
-
-          contract_definition.bytecode = replaceLinkReferences(contract_definition.bytecode, linkReferences, library_name)
-          contract_definition.unlinked_binary = replaceLinkReferences(contract_definition.unlinked_binary, linkReferences, library_name)
+      if (contract.evm.bytecode.linkReferences) {
+        Object.keys(contract.evm.bytecode.linkReferences).forEach(function (file_name) {
+          const fileLinks = contract.evm.bytecode.linkReferences[file_name]
+  
+          Object.keys(fileLinks).forEach(function (library_name) {
+            const linkReferences = fileLinks[library_name] || []
+  
+            contract_definition.bytecode = replaceLinkReferences(contract_definition.bytecode, linkReferences, library_name)
+            contract_definition.unlinked_binary = replaceLinkReferences(contract_definition.unlinked_binary, linkReferences, library_name)
+          })
         })
-      })
+      }
+      
 
       // Now for the deployed bytecode
-      Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(function (file_name) {
-        const fileLinks = contract.evm.deployedBytecode.linkReferences[file_name]
-
-        Object.keys(fileLinks).forEach(function (library_name) {
-          const linkReferences = fileLinks[library_name] || []
-
-          contract_definition.deployedBytecode = replaceLinkReferences(contract_definition.deployedBytecode, linkReferences, library_name)
+      if (contract.evm.deployedBytecode.linkReferences) {
+        Object.keys(contract.evm.deployedBytecode.linkReferences).forEach(function (file_name) {
+          const fileLinks = contract.evm.deployedBytecode.linkReferences[file_name]
+  
+          Object.keys(fileLinks).forEach(function (library_name) {
+            const linkReferences = fileLinks[library_name] || []
+  
+            contract_definition.deployedBytecode = replaceLinkReferences(contract_definition.deployedBytecode, linkReferences, library_name)
+          })
         })
-      })
+      }
 
       returnVal[contract_name] = contract_definition
     })
@@ -226,7 +229,7 @@ function replaceLinkReferences(bytecode, linkReferences, libraryName) {
 function orderABI(contract) {
   let contract_definition
   const ordered_function_names = []
-
+  if (!contract.legacyAST) return contract.abi
   for (let i = 0; i < contract.legacyAST.children.length; i++) {
     const definition = contract.legacyAST.children[i]
 

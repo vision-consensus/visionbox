@@ -115,7 +115,7 @@ module.exports = {
     // Inject failing import.
     const failingImportFileName = '__Truffle__NotFound.sol'
 
-    body = body + "\n\nimport '" + failingImportFileName + "';\n"
+    // body = body + "\n\nimport '" + failingImportFileName + "';\n"
 
     const solcStandardInput = {
       language: 'Solidity',
@@ -134,44 +134,72 @@ module.exports = {
     }
 
     const solc = getWrapper(options)
-    let output = solc[solc.compileStandard ? 'compileStandard' : 'compile'](JSON.stringify(solcStandardInput), function () {
-      // The existence of this function ensures we get a parsable error message.
-      // Without this, we'll get an error message we *can* detect, but the key will make it easier.
-      // Note: This is not a normal callback. See docs here: https://github.com/ethereum/solc-js#from-version-021
-      return {error: importErrorKey}
-    })
+    let output = solc[solc.compileStandard ? 'compileStandard' : 'compile'](JSON.stringify(solcStandardInput))
 
     output = JSON.parse(output)
-
-    // Filter out the "pre-release compiler" warning, if present.
-    const errors = output.errors.filter(function (solidity_error) {
-      return solidity_error.message.indexOf(preReleaseCompilerWarning) < 0
-    })
-
-    const nonImportErrors = errors.filter(function (solidity_error) {
-      // If the import error key is not found, we must not have an import error.
-      // This means we have a *different* parsing error which we should show to the user.
-      // Note: solc can return multiple parsing errors at once.
-      // We ignore the "pre-release compiler" warning message.
-      return solidity_error.formattedMessage.indexOf(importErrorKey) < 0
-    })
-
-    // Should we try to throw more than one? (aside; we didn't before)
-    if (nonImportErrors.length > 0) {
-      throw new CompileError(nonImportErrors[0].formattedMessage)
+    if (!output.errors) {
+      return []
     }
+     // Filter out the "pre-release compiler" warning, if present.
+    const errors = output.errors.filter(
+      ({ message }) => !message.includes(preReleaseCompilerWarning)
+    );
+    // console.log("errors: %O", output.errors);
 
-    // Now, all errors must be import errors.
     // Filter out our forced import, then get the import paths of the rest.
-    const imports = errors.filter(function (solidity_error) {
-      return solidity_error.message.indexOf(failingImportFileName) < 0
-    }).map(function (solidity_error) {
-      const matches = solidity_error.formattedMessage.match(/import[^'"]+("|')([^'"]+)("|');/)
+    const imports = errors
+      .map(({ formattedMessage, message }) => {
+        // Multiline import check which works for solcjs and solc
+        // solcjs: ^ (Relevant source part starts here and spans across multiple lines)
+        // solc: Spanning multiple lines.
+        if (formattedMessage.includes("multiple lines")) {
+          // Parse the import filename from the error message, this does not include the full path to the import
+          const matches = message.match(/Source[^'"]?.*?("|')([^'"]+)("|')/);
+          if (matches) {
+            // Extract the full path by matching against body with the import filename
+            const fullPathRegex = new RegExp(`("|')(.*${matches[2]})("|')`);
+            const importMatches = body.match(fullPathRegex);
+            if (importMatches) return importMatches[2];
+          }
+        } else {
+          const matches = formattedMessage.match(
+            /import[^'"]?.*("|')([^'"]+)("|')/
+          );
 
-      // Return the item between the quotes.
-      return matches[2]
-    })
+          // Return the item between the quotes.
+          if (matches) return matches[2];
+        }
+      })
+      .filter(match => match !== undefined && match !== failingImportFileName);
+    return imports;
+    // Filter out the "pre-release compiler" warning, if present.
+    // const errors = output.errors.filter(function (solidity_error) {
+    //   return solidity_error.message.indexOf(preReleaseCompilerWarning) < 0
+    // })
+    // const nonImportErrors = errors.filter(function (solidity_error) {
+    //   // If the import error key is not found, we must not have an import error.
+    //   // This means we have a *different* parsing error which we should show to the user.
+    //   // Note: solc can return multiple parsing errors at once.
+    //   // We ignore the "pre-release compiler" warning message.
+    //   return solidity_error.formattedMessage.indexOf(importErrorKey) < 0
+    // })
 
-    return imports
+    // // Should we try to throw more than one? (aside; we didn't before)
+    // if (nonImportErrors.length > 0) {
+    //   throw new CompileError(nonImportErrors[0].formattedMessage)
+    // }
+
+    // // Now, all errors must be import errors.
+    // // Filter out our forced import, then get the import paths of the rest.
+    // const imports = errors.filter(function (solidity_error) {
+    //   return solidity_error.message.indexOf(failingImportFileName) < 0
+    // }).map(function (solidity_error) {
+    //   const matches = solidity_error.formattedMessage.match(/import[^'"]+("|')([^'"]+)("|');/)
+
+    //   // Return the item between the quotes.
+    //   return matches[2]
+    // })
+
+    // return imports
   }
 }
