@@ -113,7 +113,10 @@ module.exports = {
 Vision Solidity supported the following versions:
 
 ```
-0.5.10
+0.5.1
+0.6.12
+0.7.6
+0.8.0
 ```
 
 
