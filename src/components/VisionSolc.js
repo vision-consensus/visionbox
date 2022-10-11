@@ -7,13 +7,15 @@ const {execSync} = require('child_process')
 const Config = require('./Config')
 
 let supportedVersions = [
+  '0.8.17',
+  '0.8.8',
   '0.8.0',
   '0.7.6',
   '0.6.12',
   '0.5.1'
 ]
 
-const maxVersion = '0.8.0'
+const maxVersion = '0.8.17'
 
 function getWrapper(options = {}) {
   supportedVersions =
