@@ -73,7 +73,7 @@ const compile = function (sources, options, callback) {
     language: 'Solidity',
     sources: {},
     settings: {
-      evmVersion: options.solc.evmVersion,
+      evmVersion: options.solc.evmVersion || 'berlin',
       optimizer: options.solc.optimizer,
       outputSelection: {
         '*': {
